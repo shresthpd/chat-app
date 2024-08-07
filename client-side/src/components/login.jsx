@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
+
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -24,6 +25,7 @@ function Login() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const navigate = useNavigate();
   const [data, setData] = useState({ name: "", password: "" });
   const [alert, setAlert] = useState({
@@ -32,14 +34,25 @@ function Login() {
     visible: false,
   });
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
+
   const sendLoginReq = async (event) => {
     event.preventDefault();
     try {
-      //console.log(data);
       const response = await axios.post(
         `http://localhost:5000/user/login`,
         data
       );
+      const token = getCookie("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        document.cookie =
+          "token=; Max-Age=0; path=/; domain=" + window.location.hostname;
+      }
       setAlert({
         severity: "success",
         message: "Log In successful!",
@@ -57,6 +70,7 @@ function Login() {
       });
     }
   };
+
   return (
     <div className="login-container">
       <div className="image-container">

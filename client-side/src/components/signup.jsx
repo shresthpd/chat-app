@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
+
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -34,6 +35,12 @@ function SignUp() {
 
   const navigate = useNavigate();
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
+
   const sendSignupReq = async (event) => {
     event.preventDefault();
     try {
@@ -41,7 +48,12 @@ function SignUp() {
         `http://localhost:5000/user/register`,
         data
       );
-      console.log(response);
+      const token = getCookie("token");
+      if (token) {
+        localStorage.setItem("token", token);
+        document.cookie =
+          "token=; Max-Age=0; path=/; domain=" + window.location.hostname;
+      }
       setAlert({
         severity: "success",
         message: "User registered successfully!",

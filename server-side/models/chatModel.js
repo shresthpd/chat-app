@@ -1,23 +1,6 @@
 import mongoose from "mongoose";
 
-const duoChatSchema = new mongoose.Schema(
-  {
-    sender: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    message: [
-      {
-        types: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-      },
-    ],
-  },
-  { timestamps: true }
-);
-
-const groupChatSchema = new mongoose.Schema(
+const ChatSchema = new mongoose.Schema(
   {
     participants: [
       {
@@ -25,17 +8,26 @@ const groupChatSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    message: [
+    messages: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
       },
     ],
+    isGroup: {
+      type: Boolean,
+      default: false,
+    },
+    groupName: {
+      type: String,
+      required: function () {
+        return this.isGroup;
+      },
+    },
   },
   { timestamps: true }
 );
 
-const DuoChat = mongoose.model("DuoChat", duoChatSchema);
-const GroupChat = mongoose.model("GroupChat", groupChatSchema);
+const Chat = mongoose.model("Chat", ChatSchema);
 
-export { DuoChat, GroupChat };
+export { Chat };

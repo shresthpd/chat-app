@@ -21,16 +21,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
-    duoChats: [
+
+    Chats: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "DuoChat",
-      },
-    ],
-    groupChats: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "GroupChat",
+        ref: "Chat",
       },
     ],
   },
